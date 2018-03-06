@@ -1,6 +1,7 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-module.exports= (req,res,next)=>{
+exports.usingHeader = (req,res,next)=>{
 
 	try{
 
@@ -17,3 +18,15 @@ module.exports= (req,res,next)=>{
 	}
 
 };
+
+exports.noHeader = (req,res,next)=>{
+	try{
+	const decode = jwt.verify(req.query.token, process.env.JWT_KEY);
+	req.userData = decode;
+	console.log(decode);
+	next();
+	}catch (error){
+	return res.status(401).json({message: 'Authentication failed'});
+	console.log('err');
+	}
+}
